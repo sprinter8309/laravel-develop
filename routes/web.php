@@ -18,6 +18,15 @@ Route::get('/', function () {
 });
 
 Route::get('about', function () {
-    return view('about');
+    $workers_list = [
+        'Ivan'=>'content-manager',
+        'Olesya'=>'backend-worker',
+        'Vladislav'=>'designer',
+        'Veronika'=>'content-manager'
+    ];
+
+    return view('about', [
+        'workers_list'=>$workers_list
+    ]);
 });
 
