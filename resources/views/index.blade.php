@@ -5,5 +5,5 @@
 @endsection
 
 @section('content')
-    <p>О блоге</p>
+    Главная
 @endsection

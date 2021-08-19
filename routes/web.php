@@ -2,6 +2,10 @@
 
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\MainController;
+use App\Http\Controllers\PostController;
+use App\Http\Controllers\CategoryController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -13,20 +17,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
 
-Route::get('about', function () {
-    $workers_list = [
-        'Ivan'=>'content-manager',
-        'Olesya'=>'backend-worker',
-        'Vladislav'=>'designer',
-        'Veronika'=>'content-manager'
-    ];
+Route::get('/', [MainController::class, 'index'])->name('index');
 
-    return view('about', [
-        'workers_list'=>$workers_list
-    ]);
-});
+Route::get('news', [PostController::class, 'news'])->name('news');
 
+Route::get('posts', [PostController::class, 'posts'])->name('posts');
+
+Route::get('about', [MainController::class, 'about']);
+
+Route::get('post/{post_id}', [PostController::class, 'single'])->name('post.single');
+
+Route::get('category/{category_id}', [CategoryController::class, 'posts'])->name('category.posts');

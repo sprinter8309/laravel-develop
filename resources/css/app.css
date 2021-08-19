@@ -1,0 +1,124 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+}
+
+html {
+    font-family: tex_gyre_regular, Arial, sans-serif;
+    font-size: 1em;
+    -ms-text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%;
+    color: #333;
+}
+
+a:link {
+    text-decoration: none;
+    outline: none;
+    color: #333;
+}
+
+a:visited {
+    text-decoration: none;
+    outline: none;
+    color: #333;
+}
+
+a:hover {
+    text-decoration: none;
+    outline: none;
+}
+
+a {
+    text-decoration: none;
+    outline: none;
+}
+
+img {
+    border: 0;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+td, th {
+    padding: 0;
+}
+
+main, footer, header, article, section, aside, figure, figcaption, hgroup, menu, nav, details, summary {
+    display: block;
+}
+
+audio, video, canvas, progress {
+    vertical-align: baseline;
+    display: inline-block;
+}
+
+
+html, body, .page {
+    height: 100%;
+    display: block;
+}
+
+.center {
+    min-height: 100%;
+    position: relative;
+    padding-bottom: 120px;
+}
+
+footer {
+    position: relative;
+    height: 120px;
+    margin-top: -115px;
+}
+
+html {
+    overflow-y: scroll;
+}
+
+body {
+    background: #fc9;
+}
+
+header {
+    height: 190px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.high-menu {
+    list-style-type: none;
+}
+
+.high-menu > li {
+    display: inline-block;
+}
+
+.high-menu > li > a {
+    width: 100px;
+    text-align: center;
+}
+
+.clearfix:after {
+    content: "";
+    display: table;
+    clear: both;
+}
