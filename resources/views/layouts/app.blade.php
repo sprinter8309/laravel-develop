@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Блог обо всем</title>
+        <title>Кругозор</title>
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <meta name="csrf-param" content="_token" />
         <link href="{{ asset('css/fonts.css') }}" rel="stylesheet">
@@ -15,12 +15,23 @@
             <div class="center">
                 <header>
                     <div class="header-logo">
-                        <img src="{{ asset('image/base/logo.png') }}">
-                        <span class="header-logo-label">Блог обо всем</span>
+                        <a href="/">
+                            <img src="{{ asset('image/base/logo.png') }}"><!--
+                            --><div class="header-text">
+                                <span class="header-logo-name">Кругозор</span>
+                                <span class="header-logo-label">Блог обо всем</span>
+                            </div>
+                        </a>
                     </div>
                     <div class="auth-block">
-                        <a href="auth" class="auth-link">Вход</a>
-                        <a href="register" class="auth-link">Регистрация</a>
+                        @auth
+                            <span>{{ Auth::user()->name }}</span>
+                            <a href="logout" class="auth-link">Выход</a>
+                        @endauth
+                        @guest
+                            <a href="login" class="auth-link">Вход</a>
+                            <a href="registration" class="auth-link">Регистрация</a>
+                        @endguest
                     </div>
                 </header>
                 <section class="header-decor-block clearfix">
@@ -46,7 +57,7 @@
                 </div>
                 <div class="footer-decor-center main-block">
                     <div class="footer-info">
-                        Блог обо всем &copy; 2021
+                        Кругозор &copy; 2021
                     </div>
                 </div>
                 <div class="footer-cover-panel">

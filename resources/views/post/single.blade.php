@@ -20,6 +20,12 @@
                 Комментарии
             </div>
 
+            <form class="post-single-comments-add-form" method="POST" action="">
+                @csrf
+                <textarea name="comment"></textarea>
+                <input type="submit" value="Отправить комментарий">
+            </form>
+
             @foreach ($comments->all() as $comment)
                 <div class="post-single-comment-item">
                     {{$comment->content}}<br>

@@ -21,11 +21,6 @@ class PostController extends BaseController
         ]);
     }
 
-    public function news()
-    {
-        return view('post.news');
-    }
-
     public function single(string $post_id)
     {
         $post = Post::findOrFail($post_id);
