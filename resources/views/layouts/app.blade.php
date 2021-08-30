@@ -26,11 +26,11 @@
                     <div class="auth-block">
                         @auth
                             <span>{{ Auth::user()->name }}</span>
-                            <a href="logout" class="auth-link">Выход</a>
+                            <a href="/logout" class="auth-link">Выход</a>
                         @endauth
                         @guest
-                            <a href="login" class="auth-link">Вход</a>
-                            <a href="registration" class="auth-link">Регистрация</a>
+                            <a href="/login" class="auth-link">Вход</a>
+                            <a href="/registration" class="auth-link">Регистрация</a>
                         @endguest
                     </div>
                 </header>

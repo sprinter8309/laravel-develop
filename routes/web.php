@@ -30,6 +30,7 @@ Route::get('posts', [PostController::class, 'posts'])->name('posts');
 Route::get('about', [MainController::class, 'about']);
 
 Route::get('post/{post_id}', [PostController::class, 'single'])->name('post.single');
+Route::post('post/{post_id}', [PostController::class, 'single'])->name('post.single');
 
 Route::get('category/{category_id}', [CategoryController::class, 'posts'])->name('category.posts');
 

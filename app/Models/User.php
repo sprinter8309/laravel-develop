@@ -11,6 +11,8 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
+    public const USER_NO_AUTH = 'Требуется аутентификация';
+
     /**
      * The attributes that are mass assignable.
      *

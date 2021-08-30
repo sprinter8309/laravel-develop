@@ -787,9 +787,14 @@ a.section-mail-link {
 .post-single-comments-add-form textarea {
     min-width: 100%;
     max-width: 100%;
-    min-height: 100px;
-    max-height: 100px;
+    min-height: 130px;
+    max-height: 130px;
     border: 1px solid #f93;
+    background: #fcfcfc;
+    font-family: jost_regular, sans-serif;
+    padding: 15px;
+    color: #555;
+    
 }
 
 .post-single-comments-add-form textarea:focus {
@@ -843,4 +848,15 @@ a.section-mail-link {
     margin-top: 45px;
 }
 
+.result-form-message {
+    padding: 12px 2px 0;
+    font-size: 16px;
+}
 
+.error-message {
+    color: #f00;
+}
+
+.success-message {
+    color: #3a5;
+}

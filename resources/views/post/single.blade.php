@@ -20,9 +20,22 @@
                 Комментарии
             </div>
 
-            <form class="post-single-comments-add-form" method="POST" action="">
+            <form class="post-single-comments-add-form" method="POST" action="{{ route('post.single', ['post_id'=>$post->id]) }}">
                 @csrf
                 <textarea name="comment"></textarea>
+
+                @if ($errors->has('comment'))
+                    <div class="result-form-message error-message">{{$errors->first('comment')}}</div>
+                @endif
+
+                @if (!$errors->any() && !empty($error))
+                    <div class="result-form-message error-message">{{$error}}</div>
+                @endif
+
+                @if (!$errors->any() && !empty($message))
+                    <div class="result-form-message success-message">{{$message}}</div>
+                @endif
+
                 <input type="submit" value="Отправить комментарий">
             </form>
 
