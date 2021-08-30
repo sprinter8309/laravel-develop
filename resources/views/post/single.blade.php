@@ -4,10 +4,12 @@
     @include('widgets._high_menu')
 @endsection
 
+@section('title-content-label')
+    <h2 class='content-title-label'><?php echo $post->title; ?></h2>
+@endsection
+
 @section('content')
     <div class="content-block">
-        <h2 class='content-title-label'><?php echo $post->title; ?></h2>
-        <h4 class='content-breadcrumbs'>Хлебные крошки</h4>
         <div class="post-single-content">
             <?php echo $post->content; ?>
         </div>
@@ -41,7 +43,13 @@
 
             @foreach ($comments->all() as $comment)
                 <div class="post-single-comment-item">
-                    {{$comment->content}}<br>
+
+                    <div class="post-single-comment-item-author">{{$comment->user->name}}</div>
+                    <div class="post-single-comment-item-date">{{date_create($comment->created_at)->format("d M Y   H:i")}}</div>
+
+                    <div class="post-single-comment-item-text">
+                        {{$comment->content}}
+                    </div>
                 </div>
             @endforeach
         </div>

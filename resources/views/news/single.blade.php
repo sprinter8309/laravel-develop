@@ -4,10 +4,12 @@
     @include('widgets._high_menu')
 @endsection
 
+@section('title-content-label')
+    <h2 class='content-title-label'><?php echo $news_item->title; ?></h2>
+@endsection
+
 @section('content')
     <div class="content-block">
-        <h2 class='content-title-label'><?php echo $news_item->title; ?></h2>
-        <h4 class='content-breadcrumbs'>Хлебные крошки</h4>
         <div class="news-single-image">
             <img src="{{ asset($news_item->main_image) }}">
         </div>

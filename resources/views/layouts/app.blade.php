@@ -46,6 +46,13 @@
                     <div class="main-block">
                         @yield('header')
                     </div>
+                    <div class="main-block page-title-block">
+                        @yield('title-content-label')
+                    </div>
+                    <div class="main-block breacrumb-container">
+                        @section('breadcrumbs', Breadcrumbs::render())
+                        @yield('breadcrumbs')
+                    </div>
                     <div class="main-block">
                         @yield('content')
                     </div>

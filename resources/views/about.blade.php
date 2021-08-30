@@ -4,6 +4,10 @@
     @include('widgets._high_menu')
 @endsection
 
+@section('title-content-label')
+    <h2 class='content-title-label'>О блоге</h2>
+@endsection
+
 @section('content')
     <div class="about-section-container">
 

@@ -187,21 +187,15 @@ footer {
 .content-title-label {
     font-weight: normal;
     display: block;
-    padding: 10px 0 10px;
+    padding: 10px 0 5px;
     font-size: 28px;
 }
 
 
 
 
-
-
-.content-breadcrumbs {
-    padding: 5px 0 20px;
-    font-size: 18px;
-    font-weight: normal;
-    display: block;
-    color: #bbb;
+.posts-list-container {
+    padding-top: 50px;
 }
 
 .posts-list-item {
@@ -295,20 +289,33 @@ span.auth-user-name {
 
 .post-single-comments {
     background: #ffffd2;
-    /*height: 400px;*/
     padding: 15px;
 }
 
 .post-single-comment-item {
-    padding: 20px 10px;
-    margin-top: 30px;
-    border-top: 1px solid #f74;
-    border-left: 1px solid #f74;
+    padding: 10px 15px 15px;
+    margin-top: 40px;
+    border-bottom: 1px solid #fd8;
+    border-left: 1px solid #fd8;
     position: relative;
     background: #ffffe3;
 }
 
+.post-single-comment-item-author {
+    font-size: 19px;
+    padding-bottom: 2px;
+    color: #172;
+}
 
+.post-single-comment-item-date {
+    font-size: 14px;
+    padding-bottom: 16px;
+    color: #777;
+}
+
+.post-single-comment-item-text {
+    line-height: 1.35;
+}
 
 .high-menu {
     font-family: pt_sans_regular, Arial, sans-serif;
@@ -585,8 +592,8 @@ span.auth-user-name {
     text-align: right;
     color: #999;
     font-size: 0.9em;
-    margin-top: 35px;
-    margin-bottom: 20px;
+    margin-top: 15px;
+    margin-bottom: 70px;
 }
 
 .post-single-author {
@@ -859,4 +866,41 @@ a.section-mail-link {
 
 .success-message {
     color: #3a5;
+}
+
+.rely-notice-info {
+    color: #777;
+    font-size: 15px;
+    padding: 15px 0 25px;
+}
+
+.breacrumb-container {
+    padding: 5px 0 10px;
+}
+
+.breacrumb {
+    display: block;
+    list-style-type: none;
+    padding: 5px 0 20px;
+    font-size: 18px;
+    font-weight: normal;
+}
+
+.breadcrumb-item {
+    display: inline-block;
+    padding-right: 8px;
+    
+}
+
+.breadcrumb-item a {
+    color: #888;
+}
+
+.breadcrumb li.active {
+    color: #888;
+    user-select: none;
+}
+
+.breadcrumb-glue-letter {
+    user-select: none;
 }

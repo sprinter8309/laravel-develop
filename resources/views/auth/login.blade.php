@@ -4,10 +4,12 @@
     @include('widgets._high_menu')
 @endsection
 
+@section('title-content-label')
+    <h2 class='content-title-label'>Войти в систему</h2>
+@endsection
+
 @section('content')
     <div class="content-block">
-        <h2 class='content-title-label'>Войти в систему</h2>
-
         <form class="auth-form" method="POST" action="{{ route('login.custom') }}">
             @csrf
             <div>

@@ -4,8 +4,10 @@
     @include('widgets._high_menu')
 @endsection
 
+@section('title-content-label')
+    <h2 class='content-title-label'>Личный кабинет</h2>
+@endsection
+
 @section('content')
-    <div>
-        <h2 class='content-title-label'>Личный кабинет</h2>
-    </div>
+    <div></div>
 @endsection

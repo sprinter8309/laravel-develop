@@ -4,10 +4,12 @@
     @include('widgets._high_menu')
 @endsection
 
+@section('title-content-label')
+    <h2 class='content-title-label'>{{ $title ?? "Новости" }}</h2>
+@endsection
+
 @section('content')
     <div>
-        <h2 class='content-title-label'>{{ $title ?? "Новости" }}</h2>
-
         <div class="news-section-first-container clearfix">
             <a href="{{ route('news.single', ['news_id'=>$first_news->id]) }}" class="news-section-first-item">
                 <div class="news-section-first-item-image">

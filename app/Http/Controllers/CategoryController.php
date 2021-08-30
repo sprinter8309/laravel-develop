@@ -15,7 +15,7 @@ class CategoryController extends Controller
         4 => 'Наука'
     ];
 
-    public function posts($category_id)
+    public function posts(string $category_id)
     {
         $category_posts = Post::select(['title', 'preview', 'image', 'id'])
                                 ->where('category_id', $category_id)
