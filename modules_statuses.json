@@ -1,0 +1,7 @@
+{
+    "Site": true,
+    "Post": true,
+    "News": true,
+    "User": true,
+    "Exam": true
+}

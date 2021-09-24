@@ -48,6 +48,13 @@ Breadcrumbs::for('news.single', function (BreadcrumbTrail $trail, $news_id) {
 
 
 
+Breadcrumbs::for('exam', function (BreadcrumbTrail $trail) {
+    $trail->parent('index');
+    $trail->push('Тесты', route('exam'));
+});
+
+
+
 Breadcrumbs::for('cabinet', function (BreadcrumbTrail $trail) {
     $trail->parent('index');
     $trail->push('Личный кабинет', route('cabinet'));

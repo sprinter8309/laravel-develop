@@ -3,7 +3,7 @@
         <a href="/news">Новости</a>
     </li>
     <li>
-        <a href="/posts">Статьи</a>
+        <a href="/post">Статьи</a>
         <ul>
             <li>
                 <a href="/category/1">Путешествия</a>

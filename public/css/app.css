@@ -904,3 +904,16 @@ a.section-mail-link {
 .breadcrumb-glue-letter {
     user-select: none;
 }
+
+.exam-index-tile-row {
+    text-align: center;
+}
+
+.exam-tile-left-item, .exam-tile-right-item {
+    margin: 0 2%;
+    width: 40%;
+    border: 1px solid #f93;
+    display: inline-block;
+}
+
+
