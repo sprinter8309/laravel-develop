@@ -8,7 +8,6 @@
         <meta name="csrf-param" content="_token" />
         <link href="{{ asset('css/fonts.css') }}" rel="stylesheet">
         <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-        <script src="{{ asset('js/app.js') }}"></script>
     </head>
     <body>
         <div class="page">

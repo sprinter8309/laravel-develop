@@ -3,5 +3,6 @@
     "Post": true,
     "News": true,
     "User": true,
-    "Exam": true
+    "Exam": true,
+    "Admin": true
 }

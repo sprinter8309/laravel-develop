@@ -13,10 +13,12 @@ class UserController extends BaseController
         $this->user_service = $user_service;
     }
 
+    
     public function index()
     {
         return view('auth.login');
     }
+
 
     public function login(Request $request)
     {
@@ -27,10 +29,12 @@ class UserController extends BaseController
         return redirect("login")->withErrors('Ошибка в данных аутентификации');
     }
 
+
     public function registration()
     {
         return view('auth.registration');
     }
+
 
     public function customRegistration(Request $request)
     {
@@ -38,11 +42,13 @@ class UserController extends BaseController
         return redirect("cabinet")->withSuccess('Аутентификация прошла успешно');
     }
 
+
     public function logout(Request $request)
     {
         $this->user_service->logoutActions();
         return Redirect('login');
     }
+
 
     public function cabinet()
     {

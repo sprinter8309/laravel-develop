@@ -60,7 +60,7 @@ class PostService
             }
         }
 
-        return SinglePostInfo::populateByArray([
+        return SinglePostInfo::loadFromArray([
             'post'=>$post,
             'author'=>Author::findOrFail($post->author_id),
             'comments'=>PostComment::where('post_id', $post->id)->get(),

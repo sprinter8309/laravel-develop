@@ -4,6 +4,8 @@ namespace Modules\Exam\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Factory;
+use Illuminate\Routing\Router;
+use Modules\Exam\Http\Middleware\CheckUserAnswer;
 
 class ExamServiceProvider extends ServiceProvider
 {
@@ -22,12 +24,15 @@ class ExamServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(Router $router)
     {
         $this->registerTranslations();
         $this->registerConfig();
         $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->moduleName, 'Database/Migrations'));
+
+        // Добавляем Middleware для проверки корректности параметров ответа при прохождении теста
+        $router->aliasMiddleware('exam.check.answer', CheckUserAnswer::class);
     }
 
     /**

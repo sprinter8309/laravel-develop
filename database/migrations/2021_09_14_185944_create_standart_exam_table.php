@@ -15,13 +15,15 @@ class CreateStandartExamTable extends Migration
     {
         Schema::create('standart_exam', function (Blueprint $table) {
             $table->id();
+            $table->string('url');
             $table->string('name');
             $table->string('version');
-            $table->string('description')->nullable();
-            $table->integer('exam_category_id');
+            $table->text('description')->nullable();
+            $table->integer('category_exam_id');
             $table->integer('time_limit')->nullable();
             $table->integer('point_value')->nullable();
             $table->integer('author_id');
+            $table->text('result_actions')->nullable();
             $table->string('preview_img')->nullable();
             $table->string('detail_img')->nullable();
             $table->timestamps();

@@ -5,6 +5,7 @@ use Diglactic\Breadcrumbs\Generator as BreadcrumbTrail;
 use App\Models\Post;
 use App\Models\News;
 use App\Models\Category;
+use App\Models\StandartExam;
 
 Breadcrumbs::for('index', function (BreadcrumbTrail $trail) {
     $trail->push('Главная', route('index'));
@@ -53,6 +54,12 @@ Breadcrumbs::for('exam', function (BreadcrumbTrail $trail) {
     $trail->push('Тесты', route('exam'));
 });
 
+Breadcrumbs::for('exam.preview', function (BreadcrumbTrail $trail, $exam_url) {
+    $trail->parent('index');
+    $trail->push('Тесты', route('exam'));
+    $trail->push(StandartExam::getExamByUrl($exam_url)->name ?? '', route('exam.preview', ['exam_url'=>$exam_url]));
+});
+
 
 
 Breadcrumbs::for('cabinet', function (BreadcrumbTrail $trail) {
@@ -68,4 +75,11 @@ Breadcrumbs::for('login', function (BreadcrumbTrail $trail) {
 Breadcrumbs::for('registration', function (BreadcrumbTrail $trail) {
     $trail->parent('index');
     $trail->push('Регистрация', route('registration'));
+});
+
+
+
+Breadcrumbs::for('admin', function (BreadcrumbTrail $trail) {
+    $trail->parent('index');
+    $trail->push('Административная панель', route('admin'));
 });

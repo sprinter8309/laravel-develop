@@ -2,9 +2,9 @@
 
 namespace Modules\Post\Entities;
 
-use App\Components\AbstractDto;
+use App\Components\BaseDto;
 
-class SinglePostInfo extends AbstractDto
+class SinglePostInfo extends BaseDto
 {
     public $post;
 
