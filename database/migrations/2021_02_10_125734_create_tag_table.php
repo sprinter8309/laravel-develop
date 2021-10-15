@@ -17,8 +17,14 @@ class CreateTagTable extends Migration
             $table->id();
             $table->string('label');
             $table->string('status');
-            $table->integer('tags_category_id');
+            $table->integer('tag_category_id');
             $table->timestamps();
+        });
+
+        Schema::table('tag', function (Blueprint $table) {
+            $table->index('label');
+            $table->index('status');
+            $table->index('tag_category_id');
         });
     }
 
@@ -29,6 +35,12 @@ class CreateTagTable extends Migration
      */
     public function down()
     {
+        Schema::table('tag', function (Blueprint $table) {
+            $table->dropIndex('tag_label_index');
+            $table->dropIndex('tag_status_index');
+            $table->dropIndex('tag_tag_category_id_index');
+        });
+
         Schema::dropIfExists('tag');
     }
 }

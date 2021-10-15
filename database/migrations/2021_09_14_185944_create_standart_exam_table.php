@@ -28,6 +28,18 @@ class CreateStandartExamTable extends Migration
             $table->string('detail_img')->nullable();
             $table->timestamps();
         });
+
+        Schema::table('standart_exam', function (Blueprint $table) {
+            $table->index('version');
+            $table->index('category_exam_id');
+            $table->index('point_value');
+            $table->index('time_limit');
+            $table->index('author_id');
+        });
+
+        Schema::table('standart_exam', function (Blueprint $table) {
+            $table->foreign('author_id')->references('id')->on('author');
+        });
     }
 
     /**
@@ -37,6 +49,18 @@ class CreateStandartExamTable extends Migration
      */
     public function down()
     {
+        Schema::table('standart_exam', function (Blueprint $table) {
+            $table->dropForeign('standart_exam_author_id_foreign');
+        });
+
+        Schema::table('standart_exam', function (Blueprint $table) {
+            $table->dropIndex('standart_exam_version_index');
+            $table->dropIndex('standart_exam_category_exam_id_index');
+            $table->dropIndex('standart_exam_point_value_index');
+            $table->dropIndex('standart_exam_time_limit_index');
+            $table->dropIndex('standart_exam_author_id_index');
+        });
+
         Schema::dropIfExists('standart_exam');
     }
 }

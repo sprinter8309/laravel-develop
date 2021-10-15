@@ -6,6 +6,11 @@ use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Http\Request;
 use Modules\Post\Services\PostService;
 
+/**
+ * Контроллер организующий общие действия со статьями
+ *
+ * @author Oleg Pyatin
+ */
 class PostController extends BaseController
 {
     public function __construct(PostService $post_service)
@@ -14,7 +19,9 @@ class PostController extends BaseController
     }
 
     /**
-     * Вывод страницы со всеми статьями блога
+     * Действие для вывода всех статей блога
+     *
+     * @return View
      */
     public function posts()
     {
@@ -23,6 +30,13 @@ class PostController extends BaseController
         ]);
     }
 
+    /**
+     * Действие вывода одиночной статьи
+     *
+     * @param Request $request  Инжектируем входной запрос
+     * @param string $post_id  ID нужной статьи
+     * @return View
+     */
     public function single(Request $request, string $post_id)
     {
         $post_info = $this->post_service->getSinglePost($request, $post_id);

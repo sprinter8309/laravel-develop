@@ -25,7 +25,9 @@ $user_answer_counter = 1;
                     <h3>Полученные ответы:</h3>
                     @foreach ($exam_questions as $question)
                         <div class="exam-result-answer-line">
-                            <?php echo $user_answer_counter++." - ". ($user_answers[$question->id] ?? "нет ответа"); ?>
+                            <?php
+                                echo $user_answer_counter++." - ". $user_answers[$question->id];
+                            ?>
                         </div>
                     @endforeach
                 </div> @break
@@ -35,17 +37,19 @@ $user_answer_counter = 1;
                     <h3>Полученные ответы:</h3>
                     @foreach ($exam_questions as $question)
                         <div class="exam-result-answer-line">
-                            <?php if ($exam_right_answers_map[$question->id]["right"]) {
-                                    echo $user_answer_counter++." - ". ($user_answers[$question->id] ?? "нет ответа");
+                            <?php
+                            if ($exam_right_answers_map[$question->id]["right"]) {
+                                    echo $user_answer_counter++." - ". $user_answers[$question->id];
                                 } else {
-                                    echo '<span class="exam-result-wrong-answer">' . $user_answer_counter++." - ". ($user_answers[$question->id] ?? "нет ответа");
+                                    echo '<span class="exam-result-wrong-answer">' . $user_answer_counter++." - ". $user_answers[$question->id];
 
                                     if (!empty($exam_right_answers_map[$question->id]["right_answer"])) {
                                         echo ' (ошибка)</span>';
                                     } else {
                                         echo '</span>';
                                     }
-                                } ?>
+                                }
+                                ?>
                         </div>
                     @endforeach
                 </div> @break
@@ -57,9 +61,9 @@ $user_answer_counter = 1;
                         <div class="exam-result-answer-line">
                             <?php
                                 if ($exam_right_answers_map[$question->id]["right"]) {
-                                    echo $user_answer_counter++." - ". ($user_answers[$question->id] ?? "нет ответа");
+                                    echo $user_answer_counter++." - ". $user_answers[$question->id];
                                 } else {
-                                    echo '<span class="exam-result-wrong-answer">' . $user_answer_counter++." - ". ($user_answers[$question->id] ?? "нет ответа");
+                                    echo '<span class="exam-result-wrong-answer">' . $user_answer_counter++." - ". $user_answers[$question->id];
 
                                     if (!empty($exam_right_answers_map[$question->id]["right_answer"])) {
                                         echo ' (ошибка)</span>';

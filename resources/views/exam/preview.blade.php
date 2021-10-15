@@ -26,6 +26,10 @@
     <div class="exam-preview-description">{{ $description }}</div>
 
     <div class="exam-preview-control-buttons">
-        <a href="/exam/start/{{ $id }}" class="exam-control-button">Начать тест</a>
+        @if (!$in_process)
+            <a href="/exam/start/{{ $id }}" class="exam-control-button">Начать тест</a>
+        @else
+            <a href="/exam/continue/{{ $id }}" class="exam-control-button">Продолжить тест</a>
+        @endif
     </div>
 @endsection

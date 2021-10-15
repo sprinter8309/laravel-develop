@@ -5,11 +5,14 @@ namespace Modules\Exam\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Modules\Exam\Services\ExamService;
-use App\Models\StandartExam;
-use App\Models\StandartQuestion;
 use Modules\Exam\Entities\QuestionAnswer;
 use App\Helpers\ConvertHelper;
 
+/**
+ * Контроллер для выполнения действий с разделом тестов
+ *
+ * @author Oleg Pyatin
+ */
 class ExamController extends Controller
 {
     public function __construct(ExamService $exam_service)
@@ -17,6 +20,11 @@ class ExamController extends Controller
         $this->exam_service = $exam_service;
     }
 
+    /**
+     * Вывод всех тестов (главное окно раздела)
+     *
+     * @return View
+     */
     public function index()
     {
         return view('exam.index', [
@@ -24,6 +32,13 @@ class ExamController extends Controller
         ]);
     }
 
+    /**
+     * Действие входной страницы (превью) теста - отсюда начинаем его прохождение, или можем
+     *     продолжить если начали ранее
+     *
+     * @param string $exam_url  URL нужного теста
+     * @return View
+     */
     public function preview(string $exam_url)
     {
         $preview_exam = $this->exam_service->getPreviewExam($exam_url);
@@ -38,27 +53,42 @@ class ExamController extends Controller
             'questions_amount'=>$preview_exam->getQuestionsAmount(),
             'preview_img'=>$preview_exam->preview_img,
             'version'=>$preview_exam->version,
+            'in_process'=>$this->exam_service->checkExamInProcess($preview_exam->id)
         ]);
     }
 
-    public function beginStandartExam(string $exam_id)
+    /**
+     * Действие старта теста (или продолжения), получаем все нужные данные о тесте и переходим
+     *     к окну вопросов
+     *
+     * @param Request $request  Входной запрос
+     * @param string $exam_id  ID экзамена
+     * @return View
+     */
+    public function launchExam(Request $request, string $exam_id)
     {
-        $question = $this->exam_service->beginNewStandartExam($exam_id);
+        $question = $this->exam_service->launchExam($request, $exam_id);
 
         return view('exam.question', [
-            'exam_id'=>$exam_id,
             'quest_id'=>$question->id,
             'quest_text'=>$question->quest_text,
             'quest_type'=>$question->quest_type,
-            'quest_number'=>StandartQuestion::FIRST_QUESTION_NUMBER,
-            'current_answer'=>null,
+            'quest_number'=>$this->exam_service->getCurrentNumberQuestion($exam_id, $question->id),
+            'exam_id'=>$question->exam_id,
+            'current_answer'=>$this->exam_service->getCurrentAnswerForQuestion($exam_id, $question->id),
             'answers'=>json_decode($question->answers, true),
-            'answers_amount'=> StandartExam::BEGIN_ANSWERS_QUANTITY,
-            'total_question_amount'=>StandartExam::getQuestionsAmountForExam($exam_id)
+            'answers_amount'=>$this->exam_service->getCurrentAnswersAmountForExam($exam_id),
+            'total_question_amount'=>$this->exam_service->getQuestionsAmountForExam($exam_id)
         ]);
     }
 
-    // Функция ответа на вопрос (также используется и для любого перехода внутри теста)
+    /**
+     * Основное действие для перемещения внутри теста
+     *
+     * @param Request $request  Входной запрос
+     * @param string $direction  Направление указанное в форме enum-слова
+     * @return View
+     */
     public function answerOnQuestion(Request $request, string $direction)
     {
         $answer = QuestionAnswer::getFromRequest($request);
@@ -76,25 +106,26 @@ class ExamController extends Controller
             'current_answer'=>$this->exam_service->getCurrentAnswerForQuestion($answer->exam_id, $question->id),
             'answers'=>json_decode($question->answers, true),
             'answers_amount'=>$this->exam_service->getCurrentAnswersAmountForExam($answer->exam_id),
-            'total_question_amount'=>StandartExam::getQuestionsAmountForExam($answer->exam_id)
+            'total_question_amount'=>$this->exam_service->getQuestionsAmountForExam($answer->exam_id)
         ]);
     }
 
-
-    // Функция завершения теста
+    /**
+     * Действие завершения начатого ранее теста (делаем расчет результатов, подчищаем использовавшиеся промежуточные средства)
+     *
+     * @param Request $request  Входной запрос
+     * @return View
+     */
     public function finishExam(Request $request)
     {
-        // При этом возможно последнее заполнение
         $answer = QuestionAnswer::getFromRequest($request);
         $this->exam_service->processAnswer($answer);
 
         // Расчитывание сессии экзамена в соответствии с правилами
         $result = $this->exam_service->checkExamAnswers($answer);
 
-        // Удаление экзамена из списка экзаменов в сессии
         $this->exam_service->finishCurrentExamAttempt($answer);
 
-        // Вывод представления
         return view('exam.result', [
             'exam_name'=>$result->getExamName(),
             'right_answers_amount'=>$result->getRightAnswersAmount(),
@@ -106,11 +137,5 @@ class ExamController extends Controller
             'answers_show'=>$result->getAnswersShow(),
             'exam_right_answers_map'=>$result->getExamRightAnswersMap()
         ]);
-    }
-
-    // Технические действия для разработки (при коммите удалить (вместе с маршрутом))
-    public function technic()
-    {
-        session()->flush();
     }
 }

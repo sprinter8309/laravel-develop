@@ -20,6 +20,17 @@ class CreatePostTagTable extends Migration
             $table->string('status');
             $table->timestamps();
         });
+
+        Schema::table('post_tag', function (Blueprint $table) {
+            $table->index('post_id');
+            $table->index('tag_id');
+            $table->index('status');
+        });
+
+        Schema::table('post_tag', function (Blueprint $table) {
+            $table->foreign('post_id')->references('id')->on('post');
+            $table->foreign('tag_id')->references('id')->on('tag');
+        });
     }
 
     /**
@@ -29,6 +40,17 @@ class CreatePostTagTable extends Migration
      */
     public function down()
     {
+        Schema::table('post_tag', function (Blueprint $table) {
+            $table->dropForeign('post_tag_post_id_foreign');
+            $table->dropForeign('post_tag_tag_id_foreign');
+        });
+
+        Schema::table('post_tag', function (Blueprint $table) {
+            $table->dropIndex('post_tag_post_id_index');
+            $table->dropIndex('post_tag_tag_id_index');
+            $table->dropIndex('post_tag_status_index');
+        });
+
         Schema::dropIfExists('post_tag');
     }
 }

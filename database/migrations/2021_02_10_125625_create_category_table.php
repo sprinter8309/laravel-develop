@@ -18,8 +18,15 @@ class CreateCategoryTable extends Migration
             $table->string('name');
             $table->string('image')->nullable();
             $table->string('link_name');
-            $table->integer('category_id')->nullable();
+            $table->integer('parent_category_id')->nullable();
             $table->boolean('is_active');
+        });
+
+        Schema::table('category', function (Blueprint $table) {
+            $table->index('name');
+            $table->index('link_name');
+            $table->index('is_active');
+            $table->index('parent_category_id');
         });
     }
 
@@ -30,6 +37,13 @@ class CreateCategoryTable extends Migration
      */
     public function down()
     {
+        Schema::table('category', function (Blueprint $table) {
+            $table->dropIndex('category_name_index');
+            $table->dropIndex('category_link_name_index');
+            $table->dropIndex('category_is_active_index');
+            $table->dropIndex('category_parent_category_id_index');
+        });
+
         Schema::dropIfExists('category');
     }
 }

@@ -4,10 +4,6 @@ namespace Modules\Exam\Entities;
 
 class ExamResult
 {
-    public $type;
-    public $degree_amount;
-    public $process;
-
     public const STANDART_THREE_DEGREES = "3";
     public const STANDART_THREE_LEVEL_ONE = 1;
     public const STANDART_THREE_LEVEL_TWO = 2;

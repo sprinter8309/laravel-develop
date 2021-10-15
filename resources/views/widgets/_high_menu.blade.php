@@ -1,9 +1,9 @@
 <ul class="high-menu">
     <li>
-        <a href="/news">Новости</a>
+        <a href="{{ route("news") }}">Новости</a>
     </li>
     <li>
-        <a href="/post">Статьи</a>
+        <a href="{{ route("posts") }}">Статьи</a>
         <ul>
             <li>
                 <a href="/category/1">Путешествия</a>
@@ -20,6 +20,9 @@
         </ul>
     </li>
     <li>
-        <a href="/about">О блоге</a>
+        <a href="{{ route("exam") }}">Тесты</a>
+    </li>
+    <li>
+        <a href="{{ route("about") }}">О блоге</a>
     </li>
 </ul>

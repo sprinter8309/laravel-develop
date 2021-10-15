@@ -6,6 +6,11 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use App\Components\Constants\UsersConstant;
 
+/*
+ * Класс-фабрика для создания новых пользователей и объектов с ними связанных (например при регистрации)
+ *
+ * @author Oleg Pyatin
+ */
 class UserFactory
 {
     public function create(array $data): User

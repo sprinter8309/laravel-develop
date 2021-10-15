@@ -16,12 +16,14 @@ class ExamInfo
     public $current_quest_id;
     public $answers;
     public $marks_degree_show;
+    public $attempt_id;
 
     public function __construct(int $exam_id, Collection $questions)
     {
         $this->exam_id = $exam_id;
         $this->answers = [];
         $this->current_quest_id = $questions->first()->id ?? null;
+        $this->attempt_id = null;
 
         // Заполнение массива ответов (в начале просто null - пользователь не ответил)
         foreach ($questions as $question) {

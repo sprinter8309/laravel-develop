@@ -2,11 +2,16 @@
 
 namespace Modules\Exam\Services;
 
+use Illuminate\Database\Eloquent\Collection;
+
 use App\Models\StandartExam;
+use App\Models\StandartQuestion;
 
 use Modules\Exam\Entities\ExamSectionInfo;
 use Modules\Exam\Entities\ExamResult;
 use Modules\Exam\Entities\ExamResultData;
+use Modules\Exam\Entities\ExamResultActions;
+use Modules\Exam\Entities\ExamAnalyzeResult;
 use Modules\Exam\Entities\QuestionAnswer;
 
 use Modules\Exam\Repositories\ExamRepository;
@@ -21,76 +26,33 @@ class ExamResultService
 
     public function checkExamAnswers(QuestionAnswer $final_answer): ExamResultData
     {
-        // Получение числа правильных ответов
-        $right_answers_amount = 0;
-
+        $exam = $this->exam_repository->getExamById($final_answer->exam_id);
         $exams_set = ExamSectionInfo::getInfoFromSession();
         $current_answers_set = $exams_set->current_exams[$final_answer->exam_id]->answers;
+        $exam_result_actions = ExamResultActions::getFromJson($exam->result_actions);
 
-        // Получение всех вопрос экзамена
-        $exam_questions = $this->exam_repository->getAllQuestionsForExam($final_answer->exam_id); // $this->getAllQuestionsForExam($final_answer->exam_id);
+        $exam_analyze_result = $this->checkRightAnswers($exam->questions, $current_answers_set);
 
-        // Массив для сохранения - какие ответы правильные, а какие нет (в дальнейшем для удобства вывода)
-        $exam_right_answers_map = [];
+        $mark = $this->getMarkForResult($exam_result_actions, $exam_analyze_result);
 
-        foreach ($exam_questions as $question) {
-            $user_answer = $current_answers_set[$question->id];
-            $question_answers = json_decode($question->answers, true);
-
-            // Получаем карту правильности ответов (так можем проверить правильность ответа пользователя на вопрос простым
-            // выбором элемента массива)
-            $map_right_answers = array_combine(array_column($question_answers, "text"), array_column($question_answers, "right"));
-
-            if (($map_right_answers[$user_answer] ?? false) === "true") {
-                $right_answers_amount++;
-                $exam_right_answers_map += [ $question->id =>[
-                    'right'=>true
-                ] ];
-            } else {
-                $exam_right_answers_map += [ $question->id =>[
-                    'right'=>false,
-                    'right_answer'=> (!empty($user_answer)) ? array_flip($map_right_answers)["true"] : null    // В случае если пользователь дал ответ, добавляем туда правильный
-                ] ];
-            }
-        }
-
-//        dd($current_answers_set);
-//        dd($right_answers_amount);
-
-        // Вывод результатов в соответствии с ними
-        $exam = $this->exam_repository->getExamById($final_answer->exam_id);
-
-        $result_actions_data = json_decode($exam->result_actions, true);
-
-        // ! здесь сменить $exam на $result_actions_data
-
-        //$result_actions_data = json_decode($exam_object->result_actions, true);
-        $mark = $this->getMarkForResult($exam, $right_answers_amount, $exam_questions->count());
-
-        //dd($mark);
         return ExamResultData::loadFromArray([
             'exam_name'=>$exam->name,
-            'right_answers_amount'=>$right_answers_amount,
-            'questions_total_quantity'=>$exam_questions->count(),
+            'right_answers_amount'=>$exam_analyze_result->right_answers_amount,
+            'questions_total_quantity'=>$exam->questions->count(),
             'mark'=>$mark,
             'user_answers'=>$current_answers_set,
-            'exam_questions'=>$exam_questions,
-            'answers_show'=>$result_actions_data["answers_show"],
-            'exam_right_answers_map'=>$exam_right_answers_map
+            'exam_questions'=>$exam->questions,
+            'answers_show'=>$exam_result_actions->answers_show,
+            'exam_right_answers_map'=>$exam_analyze_result->exam_right_answers_map
         ]);
     }
 
-
-    public function getMarkForResult(StandartExam $exam, int $right_answers_amount, int $questions_total_quantity)
+    public function getMarkForResult(ExamResultActions $exam_result_actions, ExamAnalyzeResult $exam_analyze_result)
     {
-        $result_actions_data = json_decode($exam->result_actions, true);
-
-
-        switch ($result_actions_data["type"]) {
+        switch ($exam_result_actions->type) {
 
             case ExamResult::STANDART_RESULT_DISPLAY:
-                return $this->getMarkByStandartRules($result_actions_data["degrees_amount"], $result_actions_data["process"],
-                        $right_answers_amount, $questions_total_quantity, $result_actions_data["marks_degree_show"] ?? false);
+                return $this->getMarkByStandartRules($exam_result_actions, $exam_analyze_result);
 
             case ExamResult::CUSTOM_RESULT_DISPLAY:
                 return $this->getMarkByCustomRules();
@@ -100,40 +62,40 @@ class ExamResultService
         }
     }
 
-    
-    public function getMarkByStandartRules(string $degrees_amount, string $process_type, int $right_answers_amount, int $questions_total_quantity, bool $marks_degree_show): string
+    public function getMarkByStandartRules(ExamResultActions $exam_result_actions, ExamAnalyzeResult $exam_analyze_result): string
     {
-        switch ($process_type) {
+        switch ($exam_result_actions->process_type) {
             case ExamResult::STRICT_PROCESS_TYPE:
 
-                $ratio = (float) ($right_answers_amount / $questions_total_quantity);
-                $degrees_mark = (float)$degrees_amount * $ratio;
+                $ratio = (float) ($exam_analyze_result->right_answers_amount / $exam_analyze_result->questions_total_quantity);
+                $degrees_mark = (float)$exam_result_actions->degrees_amount * $ratio;
                 $integer_mark = (int)ceil($degrees_mark);
 
-                return $this->getMessageDependOnDegreesAmount($degrees_amount, $integer_mark, $marks_degree_show);
+                return $this->getMessageDependOnDegreesAmount($exam_result_actions, $integer_mark);
 
             case ExamResult::HARD_PROCESS_TYPE:
 
-                $ratio = (float)($right_answers_amount / $questions_total_quantity);
+                $ratio = (float)($exam_analyze_result->right_answers_amount / $exam_analyze_result->questions_total_quantity);
 
                 // Делаем усложнение (по типу квадратичной функции, со снижением силы сбивки)
-                $ratio *= (float) ($questions_total_quantity-$right_answers_amount / 2 + $right_answers_amount) / $questions_total_quantity;
+                $ratio *= (float) ( (($exam_analyze_result->questions_total_quantity - $exam_analyze_result->right_answers_amount) / 2)
+                                        + $exam_analyze_result->right_answers_amount) / $exam_analyze_result->questions_total_quantity;
 
-                $degrees_mark = (float)$degrees_amount * $ratio;
+                $degrees_mark = (float)$exam_result_actions->degrees_amount * $ratio;
                 $integer_mark = (int)ceil($degrees_mark);
 
-                return $this->getMessageDependOnDegreesAmount($degrees_amount, $integer_mark, $marks_degree_show);
+                return $this->getMessageDependOnDegreesAmount($exam_result_actions, $integer_mark);
 
             default:
                 return "";
         }
     }
 
-    public function getMessageDependOnDegreesAmount(string $total_degrees_amount, int $integer_mark, bool $marks_degree_show): string
+    public function getMessageDependOnDegreesAmount(ExamResultActions $exam_result_actions, int $integer_mark): string
     {
-        $marks_degree = ($marks_degree_show)?" (".$integer_mark." из ".$total_degrees_amount." возможных)":"";
+        $marks_degree = ($exam_result_actions->marks_degree_show)?" (".$integer_mark." из ".$exam_result_actions->degrees_amount." возможных)":"";
 
-        switch ($total_degrees_amount) {
+        switch ($exam_result_actions->degrees_amount) {
             case ExamResult::STANDART_THREE_DEGREES:
                 return ExamResult::getStandartThreeLevelMarkMessage($integer_mark) . $marks_degree;
             case ExamResult::STANDART_FOUR_DEGREES:
@@ -150,4 +112,90 @@ class ExamResultService
         // Пока ничего не возвращаем
         return "";
     }
+
+
+    public function checkRightAnswers(Collection $exam_questions, array $user_answers): ExamAnalyzeResult
+    {
+        $exam_analyze_result = ExamAnalyzeResult::loadFromArray([
+            'right_answers_amount'=>0,
+            'questions_total_quantity'=>$exam_questions->count(),
+            'exam_right_answers_map'=>[],
+            'user_answers'=>$user_answers
+        ]);
+
+        foreach ($exam_questions as $question) {
+
+            switch ($question->quest_type) {
+
+                case StandartQuestion::SINGLE_CHOICE_QUEST_TYPE:
+                    $this->checkSingleChoiceQuestion($question, $exam_analyze_result);
+                    break;
+
+                case StandartQuestion::MULTIPLE_CHOICE_QUEST_TYPE:
+                    $this->checkMultipleChoiceQuestion($question, $exam_analyze_result);
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        return $exam_analyze_result;
+    }
+
+    public function checkSingleChoiceQuestion(StandartQuestion $question, ExamAnalyzeResult $exam_analyze_result): void
+    {
+        $user_answer = $exam_analyze_result->user_answers[$question->id];
+
+        $question_answers = json_decode($question->answers, true);
+        $map_right_answers = array_combine(array_column($question_answers, "text"), array_column($question_answers, "right"));
+
+        if (($map_right_answers[$user_answer] ?? false) === "true") {
+            $exam_analyze_result->right_answers_amount++;
+            $exam_analyze_result->exam_right_answers_map += [ $question->id =>[
+                'right'=>true
+            ] ];
+        } else {
+            $exam_analyze_result->exam_right_answers_map += [ $question->id =>[
+                'right'=>false,
+                'right_answer'=> (!empty($user_answer)) ? array_flip($map_right_answers)["true"] : null    // В случае если пользователь дал неправильный ответ, добавляем туда правильный
+            ] ];
+        }
+    }
+
+    public function checkMultipleChoiceQuestion(StandartQuestion $question, ExamAnalyzeResult $exam_analyze_result): void
+    {
+        $user_answer = $exam_analyze_result->user_answers[$question->id];
+        $question_answers = json_decode($question->answers, true);
+
+        $map_right_answers = array_combine(array_column($question_answers, "text"), array_column($question_answers, "right"));
+        $all_right_answers = array_filter($map_right_answers, function ($value) { return $value==="true"; });
+        $exact = true;
+
+        if (is_array($user_answer) && count($user_answer) === count($all_right_answers)) {
+            foreach ($user_answer as $index=>$answer) {
+
+                if ($map_right_answers[$answer] !=="true") {
+                    $exact = false;
+                }
+            }
+        } else {
+            $exact = false;
+        }
+
+
+        if ($exact) {
+            $exam_analyze_result->right_answers_amount++;
+            $exam_analyze_result->exam_right_answers_map += [ $question->id =>[
+                'right'=>true
+            ] ];
+        } else {
+            $exam_analyze_result->exam_right_answers_map += [ $question->id =>[
+                'right'=>false,
+                'right_answer'=> (!empty($user_answer)) ? implode(", ", array_keys($all_right_answers)) : null    // В случае если пользователь дал неправильный ответ, добавляем туда правильный
+            ] ];
+        }
+    }
+
 }
+

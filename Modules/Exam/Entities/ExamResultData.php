@@ -66,7 +66,15 @@ class ExamResultData extends BaseDto
 
     public function getUserAnswers()
     {
-        return $this->user_answers;
+        $formatted_user_answers = [];
+        foreach ($this->user_answers as $key=>$user_answer) {
+            if (is_array($user_answer)) {
+                $formatted_user_answers += [ $key=> implode(", ", $user_answer)];
+            } else {
+                $formatted_user_answers += [ $key=> $user_answer ?? "нет ответа"];
+            }
+        }
+        return $formatted_user_answers;
     }
 
     public function setUserAnswers(array $user_answers)

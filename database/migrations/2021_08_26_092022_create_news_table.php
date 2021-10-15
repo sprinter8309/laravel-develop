@@ -24,6 +24,15 @@ class CreateNewsTable extends Migration
             $table->integer('author_id');
             $table->timestamps();
         });
+
+        Schema::table('news', function (Blueprint $table) {
+            $table->index('status');
+            $table->index('author_id');
+        });
+
+        Schema::table('news', function (Blueprint $table) {
+            $table->foreign('author_id')->references('id')->on('author');
+        });
     }
 
     /**
@@ -33,6 +42,15 @@ class CreateNewsTable extends Migration
      */
     public function down()
     {
+        Schema::table('news', function (Blueprint $table) {
+            $table->dropForeign('news_author_id_foreign');
+        });
+
+        Schema::table('news', function (Blueprint $table) {
+            $table->dropIndex('news_status_index');
+            $table->dropIndex('news_author_id_index');
+        });
+
         Schema::dropIfExists('news');
     }
 }

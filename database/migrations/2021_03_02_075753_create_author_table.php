@@ -19,6 +19,15 @@ class CreateAuthorTable extends Migration
             $table->string('lastname');
             $table->integer('age');
             $table->string('sex');
+            $table->integer('user_id');
+        });
+
+        Schema::table('author', function (Blueprint $table) {
+            $table->index('user_id');
+        });
+
+        Schema::table('author', function (Blueprint $table) {
+            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 
@@ -29,6 +38,14 @@ class CreateAuthorTable extends Migration
      */
     public function down()
     {
+        Schema::table('author', function (Blueprint $table) {
+            $table->dropForeign('author_user_id_foreign');
+        });
+
+        Schema::table('author', function (Blueprint $table) {
+            $table->dropIndex('author_user_id_index');
+        });
+
         Schema::dropIfExists('author');
     }
 }

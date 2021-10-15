@@ -5,6 +5,8 @@ namespace Modules\Exam\Repositories;
 use Illuminate\Database\Eloquent\Collection;
 use App\Models\StandartQuestion;
 use App\Models\StandartExam;
+use App\Models\ExamAttempt;
+use Carbon\Carbon;
 
 /*
  * Класс-репозиторий для работы с объектами модуля тестов в БД
@@ -55,7 +57,7 @@ class ExamRepository
      */
     public function getAllQuestionsForExam(string $exam_id): Collection
     {
-        return StandartQuestion::where('exam_id', $exam_id)->get();
+        return StandartQuestion::where('exam_id', $exam_id)->orderBy('id')->get();
     }
 
     /**
@@ -78,5 +80,55 @@ class ExamRepository
     public function getExamById(string $exam_id): StandartExam
     {
         return StandartExam::findOrFail($exam_id);
+    }
+
+    /**
+     * Получаем количество вопросов для заданного теста (используется в окошке вывода вопроса)
+     *
+     * @param  string  $exam_id  Идентификатор теста
+     * @return  StandartExam  Объект теста
+     */
+    public function getQuestionsAmountForExam(string $exam_id): int
+    {
+        return StandartExam::findOrFail($exam_id)->getQuestionsAmount();
+    }
+
+    /**
+     * Создание новой попытки прохождения экзамена (в БД, после запуска теста из превью)
+     *
+     * @param  ExamAttempt  $new_exam_attempt  Подготовленный в фабрике объект
+     * @return  void  Просто сохраняем
+     */
+    public function saveNewExamAttempt(ExamAttempt $new_exam_attempt): bool
+    {
+        return $new_exam_attempt->save();
+    }
+
+    /**
+     * Обновляем ответы пользователя которые будут храниться в БД
+     *
+     * @param int $attempt_id  ID попытки хранящейся в БД
+     * @param array $updated_answers  Обновленный список ответов
+     * @return void  Просто обновляем ничего не возвращаем
+     */
+    public function updateExamAttempt(int $attempt_id, array $updated_answers): void
+    {
+        $attempt = ExamAttempt::findOrFail($attempt_id);
+        $attempt->user_answers = json_encode($updated_answers);
+        $attempt->save();
+    }
+
+    /**
+     * Делаем указание в БД что попытка завершена (при заврешении теста или проверке имеющихся незавершенных попыток)
+     *
+     * @param int $attempt_id  ID попытки хранящейся в БД
+     * @return void  Просто помечаем как завершенную, ничего не возвращаем
+     */
+    public function finishExamAttempt(int $attempt_id)
+    {
+        $attempt = ExamAttempt::findOrFail($attempt_id);
+        $attempt->status = ExamAttempt::FINISH_EXAM_STATUS;
+        $attempt->finish_at = Carbon::now();
+        $attempt->save();
     }
 }

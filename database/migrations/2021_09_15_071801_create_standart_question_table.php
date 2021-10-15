@@ -23,6 +23,15 @@ class CreateStandartQuestionTable extends Migration
             $table->text('tags')->nullable();
             $table->timestamps();
         });
+
+        Schema::table('standart_question', function (Blueprint $table) {
+            $table->index('exam_id');
+            $table->index('quest_type');
+        });
+
+        Schema::table('standart_question', function (Blueprint $table) {
+            $table->foreign('exam_id')->references('id')->on('standart_exam');
+        });
     }
 
     /**
@@ -32,6 +41,15 @@ class CreateStandartQuestionTable extends Migration
      */
     public function down()
     {
+        Schema::table('standart_question', function (Blueprint $table) {
+            $table->dropForeign('standart_question_exam_id_foreign');
+        });
+
+        Schema::table('standart_question', function (Blueprint $table) {
+            $table->dropIndex('standart_question_exam_id_index');
+            $table->dropIndex('standart_question_quest_type_index');
+        });
+
         Schema::dropIfExists('standart_question');
     }
 }

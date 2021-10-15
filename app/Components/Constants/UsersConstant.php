@@ -2,6 +2,11 @@
 
 namespace App\Components\Constants;
 
+/**
+ * Вспомогательные константы для работы с объектами пользователя
+ *
+ * @author Oleg Pyatin
+ */
 class UsersConstant
 {
     /**

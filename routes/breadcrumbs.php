@@ -77,9 +77,48 @@ Breadcrumbs::for('registration', function (BreadcrumbTrail $trail) {
     $trail->push('Регистрация', route('registration'));
 });
 
+Breadcrumbs::for('user.exam_attempt', function (BreadcrumbTrail $trail) {
+    $trail->parent('index');
+    $trail->push('Личный кабинет', route('cabinet'));
+});
+
 
 
 Breadcrumbs::for('admin', function (BreadcrumbTrail $trail) {
     $trail->parent('index');
     $trail->push('Административная панель', route('admin'));
+});
+
+Breadcrumbs::for('admin.posts', function (BreadcrumbTrail $trail) {
+    $trail->parent('index');
+    $trail->push('Административная панель', route('admin'));
+    $trail->push('Статьи', route('admin.posts'));
+});
+
+Breadcrumbs::for('admin.posts.create', function (BreadcrumbTrail $trail) {
+    $trail->parent('index');
+    $trail->push('Административная панель', route('admin'));
+    $trail->push('Статьи', route('admin.posts'));
+    $trail->push('Создать статью', route('admin.posts.create'));
+});
+
+Breadcrumbs::for('admin.posts.delete', function (BreadcrumbTrail $trail, $delete_post_id) {
+    $trail->parent('index');
+    $trail->push('Административная панель', route('admin'));
+    $trail->push('Статьи', route('admin.posts'));
+    $trail->push('Удалить статью', route('admin.posts.delete', ['delete_post_id'=>$delete_post_id]));
+});
+
+Breadcrumbs::for('admin.posts.update', function (BreadcrumbTrail $trail, $update_post_id) {
+    $trail->parent('index');
+    $trail->push('Административная панель', route('admin'));
+    $trail->push('Статьи', route('admin.posts'));
+    $trail->push('Редактировать статью', route('admin.posts.update', ['update_post_id'=>$update_post_id]));
+});
+
+Breadcrumbs::for('admin.posts.try-update', function (BreadcrumbTrail $trail) {
+    $trail->parent('index');
+    $trail->push('Административная панель', route('admin'));
+    $trail->push('Статьи', route('admin.posts'));
+    $trail->push('Редактировать статью', route('admin.posts.try-update'));
 });

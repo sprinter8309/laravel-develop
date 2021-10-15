@@ -23,6 +23,12 @@ class CreateUsersTable extends Migration
             $table->text('social_networks');
             $table->timestamps();
         });
+
+        Schema::table('users', function (Blueprint $table) {
+            $table->index('email');
+            $table->index('status');
+            $table->index('user_type');
+        });
     }
 
     /**
@@ -32,6 +38,12 @@ class CreateUsersTable extends Migration
      */
     public function down()
     {
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropIndex('users_email_index');
+            $table->dropIndex('users_status_index');
+            $table->dropIndex('users_user_type_index');
+        });
+
         Schema::dropIfExists('users');
     }
 }

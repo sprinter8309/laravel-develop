@@ -5,10 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-// 1 Hexlet Код
-
-class Article extends Model
+class UserAdmin extends Model
 {
-    //
-    protected $fillable = ['name', 'body'];
+    use HasFactory;
+
+    protected $table = 'user_admin';
 }

@@ -14,9 +14,7 @@ function initialize()
     }
 
     button_next.onclick = function() {     
-//        console.log(technic_info_question_id.innerHTML);
         question_form.action = "/exam/question/next";
-//        question_form.elements.quest_id = technic_info_question_id.innerHTML;
         question_form.submit();
     }
     

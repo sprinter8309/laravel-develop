@@ -6,6 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 
+/**
+ * Модель для работы с объектами комментариев к статьям
+ *
+ * @author Oleg Pyatin
+ */
 class PostComment extends Model
 {
     use HasFactory;

@@ -5,13 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Модель для работы с объектом типового теста (не сгенерированного автоматически)
+ *
+ * @author Oleg Pyatin
+ */
 class StandartExam extends Model
 {
     use HasFactory;
 
     protected $table = 'standart_exam';
-
-    public const BEGIN_ANSWERS_QUANTITY = '0';
 
     public static function getExamByUrl(string $exam_url): StandartExam
     {
@@ -23,13 +26,18 @@ class StandartExam extends Model
         return $this->belongsTo(CategoryExam::class, 'category_exam_id');
     }
 
+    public function questions()
+    {
+        return $this->hasMany(StandartQuestion::class, 'exam_id');
+    }
+
     public function getQuestionsAmount()
     {
         return $this->hasMany(StandartQuestion::class, 'exam_id')->count();
     }
 
-    public static function getQuestionsAmountForExam(string $exam_id):int
+    public static function getNameById(string $exam_id)
     {
-        return static::findOrFail($exam_id)->getQuestionsAmount();
+        return static::findOrFail($exam_id)->name;
     }
 }

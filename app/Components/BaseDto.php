@@ -5,7 +5,7 @@ namespace App\Components;
 use ReflectionClass;
 use ReflectionProperty;
 
-/*
+/**
  * Абстрактный класс для удобства работы с объектами передачи данных
  *
  * @author Oleg Pyatin
@@ -33,6 +33,7 @@ abstract class BaseDto
                 $object->$field_name = $array[$field_name] ?? null;
 
             } else {
+
                 // Для protected и private свойств заполняем значения через использование сеттеров
 
                 $methods = $class->getMethods();

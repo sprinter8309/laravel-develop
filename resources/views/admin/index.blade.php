@@ -9,5 +9,7 @@
 @endsection
 
 @section('content')
-
+    <div class="admin-index-menu">
+        <a href="{{ route("admin.posts") }}">Создание и редактирование статей</a>
+    </div>
 @endsection

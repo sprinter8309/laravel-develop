@@ -20,34 +20,49 @@ use app\models\StandartQuestion;
         {{ $quest_text }}
     </div>
     <div class="exam-question-answers-block">
-        <?php if ($quest_type === StandartQuestion::SINGLE_CHOICE_QUEST_TYPE): ?>
-            <form class="exam-question-form" method="POST" action="/main">
-                @csrf
-                @foreach ($answers as $answer)
-                    <label class="exam-question-answers-single-choice">
-                        <input name="answer" type="radio" value="{{ $answer["text"] }}"
-                            <?php if ($answer["text"]===$current_answer) echo " checked"; ?>>{{ $answer["text"] }}
-                    </label>
-                @endforeach
 
-                <div class="exam-question-design-bottom-line"></div>
+        <form class="exam-question-form" method="POST" action="/main">
+            @csrf
 
-                <div class="exam-question-info-block">
-                    <div class="exam-question-answers-amount">Ответов на вопросы: {{ $answers_amount }} из {{ $total_question_amount }}</div>
-                </div>
+            @switch ($quest_type)
 
-                <div class="exam-question-answers-control-buttons">
-                    <button class="exam-question-button-begin">В начало</button>
-                    <button class="exam-question-button-previous">Назад</button>
-                    <button class="exam-question-button-next">Дальше</button>
-                    <button class="exam-question-button-finish">Закончить тест</button>
-                </div>
-                <input name="question_id" type="hidden" value="{{ $quest_id }}">
-                <input name="exam_id" type="hidden" value="{{ $exam_id }}">
-                <div class="exam-question-technic-info">
-                    <div class="exam-question-technic-info-quest-id">{{ $quest_id }}</div>
-                </div>
-            </form>
-        <?php endif;?>
+                @case(StandartQuestion::SINGLE_CHOICE_QUEST_TYPE)
+                    @foreach ($answers as $answer)
+                        <label class="exam-question-answers-single-choice">
+                            <input name="answer" type="radio" value="{{ $answer["text"] }}"
+                                <?php if ($answer["text"]===$current_answer) echo " checked"; ?>>{{ $answer["text"] }}
+                        </label>
+                    @endforeach
+                    @break
+                @case(StandartQuestion::MULTIPLE_CHOICE_QUEST_TYPE)
+                    @foreach ($answers as $answer)
+                        <label class="exam-question-answers-multiple-choice">
+                            <input name="answer[]" type="checkbox" value="{{ $answer["text"] }}"
+                                <?php if (in_array($answer["text"], $current_answer ?? [])) echo " checked"; ?>>{{ $answer["text"] }}
+                        </label>
+                    @endforeach
+                    @break
+                @default
+                    @break
+            @endswitch
+
+            <div class="exam-question-design-bottom-line"></div>
+
+            <div class="exam-question-info-block">
+                <div class="exam-question-answers-amount">Ответов на вопросы: {{ $answers_amount }} из {{ $total_question_amount }}</div>
+            </div>
+
+            <div class="exam-question-answers-control-buttons">
+                <button class="exam-question-button-begin">В начало</button>
+                <button class="exam-question-button-previous">Назад</button>
+                <button class="exam-question-button-next">Дальше</button>
+                <button class="exam-question-button-finish">Закончить тест</button>
+            </div>
+            <input name="question_id" type="hidden" value="{{ $quest_id }}">
+            <input name="exam_id" type="hidden" value="{{ $exam_id }}">
+            <div class="exam-question-technic-info">
+                <div class="exam-question-technic-info-quest-id">{{ $quest_id }}</div>
+            </div>
+        </form>
     </div>
 @endsection

@@ -21,6 +21,10 @@ class CreateCategoryExamTable extends Migration
             $table->string('detail_img')->nullable();
             $table->timestamps();
         });
+
+        Schema::table('category_exam', function (Blueprint $table) {
+            $table->index('url');
+        });
     }
 
     /**
@@ -30,6 +34,10 @@ class CreateCategoryExamTable extends Migration
      */
     public function down()
     {
+        Schema::table('category_exam', function (Blueprint $table) {
+            $table->dropIndex('category_exam_url_index');
+        });
+
         Schema::dropIfExists('category_exam');
     }
 }

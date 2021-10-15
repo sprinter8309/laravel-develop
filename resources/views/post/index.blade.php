@@ -8,6 +8,8 @@
     <h2 class='content-title-label'>{{ $title ?? "Статьи" }}</h2>
 @endsection
 
+
+
 @section('content')
     <div class="content-block">
         <div class="posts-list-container">

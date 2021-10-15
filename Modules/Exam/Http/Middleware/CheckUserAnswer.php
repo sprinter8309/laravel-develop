@@ -16,7 +16,6 @@ use Closure;
  */
 class CheckUserAnswer
 {
-
     public function handle($request, Closure $next)
     {
         $answer = QuestionAnswer::getFromRequest($request);
@@ -37,6 +36,12 @@ class CheckUserAnswer
         return $next($request);
     }
 
+    /**
+     * Проверка явялется ли полученный запрос подходящим хотя бы для одного из начатых тестов (корректным)
+     *
+     * @param QuestionAnswer $answer  Структура с данными ответа на один из вопросов теста
+     * @return bool  Есть хотя бы один подходящий под запрос тест или нет
+     */
     public function isAttemptActual(QuestionAnswer $answer): bool
     {
         $exams_set = ExamSectionInfo::getInfoFromSession();

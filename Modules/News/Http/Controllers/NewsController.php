@@ -5,6 +5,11 @@ namespace Modules\News\Http\Controllers;
 use Illuminate\Routing\Controller as BaseController;
 use Modules\News\Services\NewsService;
 
+/**
+ * Контроллер для выполнения действий с разделом новостей
+ *
+ * @author Oleg Pyatin
+ */
 class NewsController extends BaseController
 {
     public function __construct(NewsService $news_service)

@@ -19,3 +19,5 @@ Route::post('custom-login', [UserController::class, 'login'])->name('login.custo
 Route::get('registration', [UserController::class, 'registration'])->name('registration');
 Route::post('custom-registration', [UserController::class, 'customRegistration'])->name('registration.custom');
 Route::get('logout', [UserController::class, 'logout'])->name('logout');
+
+Route::get('cabinet/exam_attempt/{attempt_id}', [UserController::class, 'viewExamAttempt'])->name('user.exam_attempt');

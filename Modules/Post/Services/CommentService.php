@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Services;
+namespace Modules\Post\Services;
 
-use App\Models\PostComment;
+//use App\Models\PostComment;
+use Modules\Post\Factories\PostFactory;
+use Modules\Post\Repositories\PostRepository;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Post;
@@ -14,6 +16,11 @@ use App\Models\Post;
  */
 class CommentService
 {
+    public function __construct(PostFactory $post_factory, PostRepository $post_repository)
+    {
+        $this->post_factory = $post_factory;
+        $this->post_repository = $post_repository;
+    }
     /**
      * Функция создания комментария для пользователя
      *
@@ -32,14 +39,9 @@ class CommentService
             'comment'=>'required|min:2'
         ]);
 
-        try {
-            PostComment::create([
-                'status'=> PostComment::STATUS_ACTIVE,
-                'content'=>$request->comment,
-                'post_id'=>$post->id,
-                'user_id'=>$user->id
-            ]);
-        } catch (\Throwable $except) {
+        $new_post_comment = $this->post_factory->createPostComment($request->comment, $post->id);
+
+        if (!$this->post_repository->saveNewPostComment($new_post_comment)) {
             return PostComment::COMMENT_ERROR_IN_ADD;
         }
 

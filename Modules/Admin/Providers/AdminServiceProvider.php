@@ -3,7 +3,11 @@
 namespace Modules\Admin\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Database\Eloquent\Factory;
+use Illuminate\Routing\Router;
+use Illuminate\Support\Facades\Gate;
+use App\Models\User;
+
+use Modules\Admin\Http\Middleware\AdminEntrance;
 
 class AdminServiceProvider extends ServiceProvider
 {
@@ -22,12 +26,22 @@ class AdminServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(Router $router)
     {
         $this->registerTranslations();
         $this->registerConfig();
         $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->moduleName, 'Database/Migrations'));
+
+        // Добавляем Middleware для контроля чтобы в админку заходили только пользователи
+        //     обладающие для этого соответствующими возможностями
+        $router->aliasMiddleware('admin.entrance', AdminEntrance::class);
+
+        // Добавляем гэйт на вход в админку (входить могут только пользователи имеющие запись в
+        //     таблице user_admin (пробуем ее достать через связь в Eloquent))
+        Gate::define('admin-entrance', function (User $user) {
+            return $user->admin !== null;
+        });
     }
 
     /**
