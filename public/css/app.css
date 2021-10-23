@@ -208,8 +208,21 @@ footer {
 
 .posts-list-item {
     border-top: 1px solid #f93;
-    padding: 10px 0 30px;
+    margin: 15px 0 35px;
+    padding-top: 15px;
     position: relative;
+}
+
+.posts-list-item-container {
+    padding: 20px 20px 25px;
+    display: block;
+    transition: 0.4s all;
+    position: relative;
+    border-radius: 5px;
+}
+
+.posts-list-item-container:hover {
+    background: #fefdc3;
 }
 
 .posts-list-item h3 {
