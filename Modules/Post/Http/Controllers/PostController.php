@@ -46,7 +46,8 @@ class PostController extends BaseController
             'author'=>$post_info->author,
             'comments'=>$post_info->comments,
             'error'=>$post_info->error,
-            'message'=>$post_info->message
+            'message'=>$post_info->message,
+            'random_section_posts'=>$this->post_service->getRandomSectionPosts($post_info->post) 
         ]);
     }
 }

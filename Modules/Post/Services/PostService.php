@@ -9,12 +9,14 @@ use Modules\Post\Factories\PostFactory;
 use Modules\Post\Entities\SinglePostInfo;
 use Modules\Post\Entities\EditPostInfo;
 use Modules\Post\Services\CommentService;
+use Modules\Post\Services\CategoryService;
 use Modules\Post\Http\Requests\PostCreateRequest;
 use Modules\Post\Http\Requests\PostUpdateRequest;
 use App\Models\Author;
 use App\Models\Post;
 use App\Models\PostComment;
 use App\Components\Constants\FilesConstant;
+use App\Components\Constants\PostsConstant;
 
 
 /**
@@ -25,12 +27,16 @@ use App\Components\Constants\FilesConstant;
 class PostService
 {
     public $user_service;
+    
+    public $category_service;
 
-    public function __construct(CommentService $comment_service, PostRepository $post_repository, PostFactory $post_factory)
+    public function __construct(CommentService $comment_service, PostRepository $post_repository, PostFactory $post_factory,
+                                CategoryService $category_service)
     {
         $this->post_repository = $post_repository;
-        $this->comment_service = $comment_service;
         $this->post_factory = $post_factory;
+        $this->comment_service = $comment_service;
+        $this->category_service = $category_service;
     }
 
     /**
@@ -142,5 +148,27 @@ class PostService
             'image'=>$updated_file ?? null,
             'category_id'=>$request->post('category')
         ]));
+    }
+    
+    /**
+     * Функция получения нескольких случайных статей из категории рассматриваемой статьи (нужна для блока 
+     *     статей по теме)
+     *
+     * @param Post $post  Модель статьи
+     * @return Collection
+     */
+    public function getRandomSectionPosts(Post $post)
+    {       
+        $category_posts = $this->category_service->getAllCategoryPosts($post->section->id);
+        
+        $other_category_posts = $category_posts->filter(function ($category_post, $key) use ($post) {
+            return $category_post->id !== $post->id;
+        });
+        
+        $other_category_posts_quantity = $other_category_posts->count();
+        
+        $random_posts_quantity = ($other_category_posts_quantity <= PostsConstant::MAX_RANDOM_SECTION_POSTS) ? $other_category_posts_quantity : PostsConstant::MAX_RANDOM_SECTION_POSTS;
+        
+        return $other_category_posts->random($random_posts_quantity);
     }
 }

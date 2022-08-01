@@ -44,4 +44,11 @@ class Post extends Model
      * Обозначение создания статьи
      */
     public const POST_CREATE = 'create';
+    /**
+     * Получение раздела для рассматриваемой статьи
+     */
+    public function section()
+    {
+        return $this->hasOne(Category::class, 'id', 'category_id');
+    }
 }

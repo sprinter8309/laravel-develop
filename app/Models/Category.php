@@ -15,4 +15,9 @@ class Category extends Model
     use HasFactory;
 
     protected $table = 'category';
+    
+    public function posts()
+    {
+        return $this->hasMany(Post::class, 'category_id');
+    }
 }

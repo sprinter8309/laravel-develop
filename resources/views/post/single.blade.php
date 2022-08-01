@@ -17,6 +17,19 @@
             <div class="post-single-author">Автор: <?php echo $author->name . ' ' . $author->lastname; ?></div>
             Добавлено: <?php echo date_create($post->created_at)->format("d.m.Y"); ?>
         </div>
+        <div class="post-single-other-section-articles">
+            <h2>Другие статьи раздела "{{ $post->section->name }}":</h2>
+            <div>
+                @foreach ($random_section_posts as $random_post_item)
+                    <a href="{{ route('post.single', ['post_id'=>$random_post_item->id]) }}" class="post-single-other-section-link">
+                        <div class="post-single-other-section-item">
+                            <img src="{{ asset($random_post_item->image) }}">
+                            <h3>{{ $random_post_item->title }}</h3>
+                        </div>
+                    </a>
+                @endforeach
+            </div>
+        </div>
         <div class="post-single-comments">
             <div class="post-single-comments-title">
                 Комментарии
